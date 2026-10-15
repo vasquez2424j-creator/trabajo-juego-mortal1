@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#10152b">
+<title>Mario Cars — Turbo Run</title>
+<style>
+:root{--bg:#0c1022;--panel:#171e3a;--cyan:#38e8ff;--yellow:#ffd447;--pink:#ff4f8b;--white:#f5f7ff}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:radial-gradient(ellipse at top,#202b55 0,#0c1022 65%);color:var(--white);font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif;touch-action:manipulation}
+body{display:flex;justify-content:center;padding:14px 10px 22px}.app{width:min(100%,520px)}.top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:2px 2px 12px}.brand{display:flex;align-items:center;gap:10px}.logo{width:48px;height:48px;display:grid;place-items:center;border-radius:15px;background:linear-gradient(135deg,#ff4f8b,#ff8a45);font-size:26px;box-shadow:0 7px 24px #ff4f8b40}.eyebrow{font-size:10px;letter-spacing:2px;color:var(--cyan);font-weight:900}.brand h1{font-size:20px;line-height:1.05;margin:3px 0 0;font-weight:1000;letter-spacing:.2px}.sound{border:1px solid #ffffff24;background:#ffffff0b;color:white;border-radius:12px;padding:10px 12px;font-weight:800}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}.stat{background:linear-gradient(145deg,#202849,#151b34);border:1px solid #ffffff12;border-radius:14px;padding:9px 12px;box-shadow:0 8px 22px #0002}.stat span{display:block;color:#aeb8d9;font-size:10px;letter-spacing:1.2px;font-weight:900}.stat strong{display:block;font-size:20px;line-height:1.35;font-variant-numeric:tabular-nums}
+.gamebox{position:relative;overflow:hidden;border:1px solid #9af5ff55;border-radius:22px;background:#111;box-shadow:0 18px 50px #0007,0 0 30px #38e8ff12}.gamebox:after{content:"";pointer-events:none;position:absolute;inset:0;border-radius:22px;box-shadow:inset 0 0 0 1px #ffffff0b}.gamebox canvas{display:block;width:100%;height:auto;aspect-ratio:390/610;max-height:68vh;object-fit:contain}
+.overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:22px;background:linear-gradient(180deg,#091126a8,#090d20dd);backdrop-filter:blur(5px)}.modal{width:100%;max-width:310px;text-align:center;background:#131a34ed;border:1px solid #ffffff22;border-radius:22px;padding:24px 20px;box-shadow:0 18px 60px #0008}.pill{display:inline-block;border:1px solid #38e8ff55;color:var(--cyan);background:#38e8ff12;padding:6px 10px;border-radius:999px;font-size:10px;font-weight:1000;letter-spacing:1.5px}.modal h2{font-size:29px;line-height:1.02;margin:13px 0 9px}.modal p{color:#bac4e3;font-size:13px;line-height:1.55;margin:0 0 18px}.primary{width:100%;border:0;border-radius:14px;padding:14px;background:linear-gradient(100deg,#38e8ff,#79ffcf);color:#071323;font-size:15px;font-weight:1000;box-shadow:0 5px 0 #1798a5;cursor:pointer}.primary:active{transform:translateY(3px);box-shadow:0 2px 0 #1798a5}.help{display:flex;justify-content:center;gap:10px;align-items:center;margin:12px 0 0;color:#aeb8d9;font-size:11px}.key{display:inline-grid;place-items:center;min-width:25px;height:24px;border:1px solid #ffffff30;background:#ffffff0b;border-radius:7px;color:#fff;font-weight:900}
+.controls{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}.control{border:1px solid #ffffff20;background:linear-gradient(145deg,#202849,#151b34);color:white;border-radius:16px;padding:15px 10px;font-size:20px;font-weight:900;box-shadow:0 5px 0 #080b18;user-select:none;-webkit-user-select:none}.control:active{transform:translateY(3px);box-shadow:0 2px 0 #080b18}.footer{text-align:center;color:#8995b9;font-size:10px;letter-spacing:.5px;margin-top:15px}.footer b{color:#cad5fa}
+@media(min-width:520px){body{padding-top:22px}.brand h1{font-size:23px}}
+</style></head>
+<body><main class="app">
+<div class="top"><div class="brand"><div class="logo">🏎️</div><div><div class="eyebrow">ARCADE RACING</div><h1>MARIO CARS <span style="color:var(--cyan)">TURBO</span></h1></div></div><button class="sound" id="soundBtn" aria-label="Activar o desactivar sonido">🔊 Sonido</button></div>
+<div class="stats"><div class="stat"><span>PUNTOS</span><strong id="score">00000</strong></div><div class="stat"><span>RÉCORD</span><strong id="best">00000</strong></div><div class="stat"><span>VIDAS</span><strong id="lives">♥ ♥ ♥</strong></div></div>
+<div class="gamebox"><canvas id="game" width="390" height="610"></canvas><div class="overlay" id="overlay"><div class="modal"><div class="pill">TEMPORADA 01 · TURBO CUP</div><h2 id="modalTitle">¡A CORRER!</h2><p id="modalText">Esquiva el tráfico, recoge monedas y demuestra que eres el rey de la pista.</p><button class="primary" id="playBtn">▶ INICIAR CARRERA</button><div class="help"><span class="key">←</span><span class="key">→</span><span>o toca los controles</span></div></div></div></div>
+<div class="controls"><button class="control" id="left">◀ IZQUIERDA</button><button class="control" id="right">DERECHA ▶</button></div>
+<div class="footer">JUEGO ARCADE FAN · HECHO PARA MÓVIL Y PC · <b>¡QUE GANE EL MEJOR!</b></div>
+</main>
+<script>
+(()=> {
+const canvas=document.querySelector('#game'),ctx=canvas.getContext('2d');
+const $=id=>document.getElementById(id);
+let state='menu',frame=0,score=0,lives=3,speed=3.2,player,traffic=[],coins=[],particles=[],shake=0,sound=true,audioCtx=null,last=0;
+let best=0;try{best=Number(localStorage.getItem('marioCarsTurboBest')||0)}catch(e){}
+$('best').textContent=String(best).padStart(5,'0');
+const lanes=[91,195,299], colors=['#26a7ff','#ff8b3d','#b46bff','#4fe0a1','#ff4f8b'];
+function beep(freq=440,dur=.07){if(!sound)return;try{audioCtx=audioCtx||new(window.AudioContext||window.webkitAudioContext)();let o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type='triangle';o.frequency.value=freq;g.gain.value=.045;o.connect(g);g.connect(audioCtx.destination);o.start();g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+dur);o.stop(audioCtx.currentTime+dur)}catch(e){}}
+function updateHud(){$('score').textContent=String(score).padStart(5,'0');$('lives').textContent=lives===3?'♥ ♥ ♥':lives===2?'♥ ♥ ♡':lives===1?'♥ ♡ ♡':'♡ ♡ ♡';}
+function start(){state='playing';frame=0;score=0;lives=3;speed=3.2;player={x:174,y:492,w:42,h:70,invuln:0};traffic=[];coins=[];particles=[];shake=0;updateHud();$('overlay').style.display='none';beep(660,.12)}
+function end(){state='over';$('modalTitle').textContent='¡FIN DE CARRERA!';$('modalText').textContent='Puntuación: '+score+'. '+(score>best?'¡Nuevo récord personal! Vuelve a la pista y supera tu marca.':'¿Puedes conseguir una puntuación más alta?');$('playBtn').textContent='↻ VOLVER A JUGAR';$('overlay').style.display='flex';if(score>best){best=score;try{localStorage.setItem('marioCarsTurboBest',best)}catch(e){}$('best').textContent=String(best).padStart(5,'0')}beep(150,.3)}
+function rounded(x,y,w,h,r,fill){ctx.fillStyle=fill;ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fill()}
+function road(){let g=ctx.createLinearGradient(0,0,390,610);g.addColorStop(0,'#1a824f');g.addColorStop(1,'#0d5039');ctx.fillStyle=g;ctx.fillRect(0,0,390,610);
+ctx.fillStyle='#20283b';ctx.fillRect(38,0,314,610);ctx.fillStyle='#29334b';ctx.fillRect(48,0,294,610);
+for(let y=-50;y<660;y+=50){let yy=(y+(frame*speed*1.6)%50);ctx.fillStyle='#dce8f6';ctx.fillRect(41,yy,5,25);ctx.fillRect(344,yy,5,25)}
+ctx.fillStyle='#65718a';ctx.fillRect(140,0,2,610);ctx.fillRect(244,0,2,610);
+for(let y=-40;y<650;y+=54){let yy=(y+(frame*speed*1.8)%54);ctx.fillStyle='#e5eaf5';ctx.fillRect(189,yy,4,28)}
+// roadside lights
+for(let y=-20;y<650;y+=100){let yy=(y+(frame*speed)%100);ctx.fillStyle='#38e8ff';ctx.fillRect(20,yy,8,19);ctx.fillRect(362,yy,8,19)}
+}
+function drawKart(x,y,color,isPlayer=false){ctx.save();ctx.translate(x,y);
+ctx.shadowColor=color;ctx.shadowBlur=isPlayer?13:4;
+rounded(-3,12,9,20,3,'#080b14');rounded(36,12,9,20,3,'#080b14');rounded(-3,44,9,20,3,'#080b14');rounded(36,44,9,20,3,'#080b14');
+rounded(0,0,42,70,11,color);ctx.shadowBlur=0;rounded(5,8,32,22,6,'#0c1930');rounded(8,11,26,14,4,'#9deaff');
+rounded(4,2,9,5,2,'#fff5b2');rounded(29,2,9,5,2,'#fff5b2');rounded(5,57,9,7,2,'#fff3a4');rounded(28,57,9,7,2,'#fff3a4');
+if(isPlayer){rounded(13,35,16,14,4,'#fff');ctx.fillStyle='#d82743';ctx.font='900 13px Arial';ctx.fillText('M',16,46);ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(21,2,8,Math.PI,0);ctx.fill();ctx.fillStyle='#e52d48';ctx.beginPath();ctx.arc(21,2,6,Math.PI,0);ctx.fill();}
+ctx.restore()}
+function coin(o){let pulse=1+Math.sin(frame*.13)*.09;ctx.save();ctx.translate(o.x,o.y);ctx.scale(pulse,pulse);ctx.shadowColor='#ffd447';ctx.shadowBlur=13;ctx.fillStyle='#ffcf3e';ctx.beginPath();ctx.arc(0,0,11,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;ctx.strokeStyle='#fff1a5';ctx.lineWidth=2;ctx.stroke();ctx.fillStyle='#855300';ctx.font='bold 13px Arial';ctx.fillText('$',-4,5);ctx.restore()}
+function burst(x,y,color){for(let i=0;i<12;i++)particles.push({x,y,vx:(Math.random()-.5)*5,vy:(Math.random()-.7)*5,life:24,color})}
+function drawParticles(){particles.forEach(p=>{ctx.globalAlpha=Math.max(0,p.life/24);ctx.fillStyle=p.color;ctx.fillRect(p.x,p.y,4,4);p.x+=p.vx;p.y+=p.vy;p.life--});ctx.globalAlpha=1;particles=particles.filter(p=>p.life>0)}
+function collide(a,b){return a.x+36>b.x+4&&a.x+6<b.x+38&&a.y+60>b.y+7&&a.y+12<b.y+64}
+function draw(){ctx.save();if(shake>0){ctx.translate((Math.random()-.5)*shake,(Math.random()-.5)*shake);shake*=.85}road();
+traffic.forEach(t=>drawKart(t.x,t.y,t.color));coins.forEach(coin);drawParticles();
+if(player)drawKart(player.x,player.y,'#ef3151',true);
+if(state==='playing'){ctx.fillStyle='#ffffffcc';ctx.font='900 11px Arial';ctx.fillText('TURBO '+Math.floor(speed*10),15,27)}
+ctx.restore()}
+function loop(ts){let dt=Math.min(2,(ts-last)/16.67||1);last=ts;if(state==='playing'){frame+=dt;speed=Math.min(8.2,speed+.0015*dt);if(frame%Math.max(27,Math.floor(54-speed*2))<dt){let lane=Math.floor(Math.random()*3);traffic.push({x:lanes[lane]-21,y:-85,color:colors[Math.floor(Math.random()*colors.length)],hit:false})}
+if(Math.floor(frame)%78===0)coins.push({x:lanes[Math.floor(Math.random()*3)],y:-20,hit:false});
+traffic.forEach(t=>{t.y+=speed*dt;if(!t.hit&&player.invuln<=0&&collide(player,t)){t.hit=true;lives--;player.invuln=65;shake=10;burst(player.x+21,player.y+30,'#ff637e');beep(120,.18);updateHud();if(lives<=0)end()}});
+traffic=traffic.filter(t=>t.y<660);
+coins.forEach(o=>{o.y+=speed*dt;if(!o.hit&&Math.abs(player.x+21-o.x)<28&&Math.abs(player.y+35-o.y)<34){o.hit=true;score+=25;burst(o.x,o.y,'#ffd447');beep(850,.07);updateHud()}});
+coins=coins.filter(o=>o.y<650&&!o.hit);if(Math.floor(frame)%8===0)score+=1;updateHud();if(player.invuln>0)player.invuln-=dt;}
+draw();requestAnimationFrame(loop)}
+function move(dir){if(state!=='playing')return;player.x=Math.max(55,Math.min(293,player.x+dir*52));beep(dir<0?330:390,.035)}
+$('playBtn').addEventListener('click',start);$('left').addEventListener('click',()=>move(-1));$('right').addEventListener('click',()=>move(1));
+$('soundBtn').addEventListener('click',()=>{sound=!sound;$('soundBtn').textContent=sound?'🔊 Sonido':'🔇 Silencio';if(sound)beep(600,.06)});
+document.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key.toLowerCase()==='a'){e.preventDefault();move(-1)}if(e.key==='ArrowRight'||e.key.toLowerCase()==='d'){e.preventDefault();move(1)}if(e.key==='Enter'&&state!=='playing')start()});
+let touchX=0;canvas.addEventListener('touchstart',e=>{touchX=e.changedTouches[0].clientX},{passive:true});canvas.addEventListener('touchend',e=>{let dx=e.changedTouches[0].clientX-touchX;if(Math.abs(dx)>25)move(dx>0?1:-1)},{passive:true});
+player={x:174,y:492,w:42,h:70};road();draw();requestAnimationFrame(loop);
+})();
+</script></body></html>
