@@ -1,0 +1,2 @@
+# La versión Python utiliza módulos estándar (tkinter, math, random, wave, etc.).
+# No se requieren paquetes adicionales de pip.
